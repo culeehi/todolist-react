@@ -1,0 +1,37 @@
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+.navbar {
+   display: flex;
+   margin-bottom: 100px;
+   margin-top: 30px;
+}
+
+.navbar-item {
+   margin: 0 15px;
+   list-style: none;
+}
+
+.navbar-item > a {
+   text-decoration: none;
+   font-family: sans-serif;
+   font-style: normal;
+   font-weight: 500;
+   font-size: 20px;
+   line-height: 24px;
+
+   letter-spacing: -0.3px;
+   text-transform: uppercase;
+
+   color: #7b88a8;
+   padding: 12px;
+}
+
+.navbar-item > a:hover {
+   border-radius: 10px;
+   background-color: #939ec4;
+   color: #fff;
+}
