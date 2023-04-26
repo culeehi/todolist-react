@@ -46,3 +46,19 @@ tbody > tr > td {
    border-radius: 3px; */
    cursor: pointer;
 }
+
+.input-student {
+   width: 30%;
+   display: grid;
+}
+.input-student > label {
+   margin-top: 15px;
+}
+.input-student > input {
+   padding: 5px;
+}
+
+.form-input {
+   margin: 0 auto;
+   width: 85%;
+}
