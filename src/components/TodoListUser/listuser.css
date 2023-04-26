@@ -62,3 +62,7 @@ tbody > tr > td {
    margin: 0 auto;
    width: 85%;
 }
+
+.error-validate {
+   color: #fff;
+}

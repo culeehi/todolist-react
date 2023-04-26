@@ -7,9 +7,9 @@ const MyForm = () => {
       password: '',
    });
    const [errors, setErrors] = useState({
-      name: '',
-      email: '',
-      password: '',
+      // name: '', name,
+      // email: '', code,
+      // password: '',date,
    });
 
    const handleInputChange = (event) => {
