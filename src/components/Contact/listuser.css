@@ -37,13 +37,13 @@ tbody > tr > td {
 
 .btn-edit:hover {
    /* background-color: #00fba7;
-   border-radius: 3px; */
+    border-radius: 3px; */
    cursor: pointer;
 }
 
 .btn-delete:hover {
    /* background-color: rgb(237 82 82);
-   border-radius: 3px; */
+    border-radius: 3px; */
    cursor: pointer;
 }
 

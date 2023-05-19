@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import './listuser.css';
 
 const ListUser = () => {
+   const Api = 'https://6440e462792fe886a8986bf7.mockapi.io/api/v1/students';
+
    const [user, setUser] = useState([]);
 
    const [name, setName] = useState('');
    const [code, setCode] = useState('');
    const [date, setDate] = useState('');
+
+   const [searchTerm, setSearchTerm] = useState('');
 
    const [errors, setErrors] = useState({
       name: '',
@@ -14,14 +18,21 @@ const ListUser = () => {
       date: '',
    });
 
-   // const [formData, setFormData] = useState({
-   //    name: '',
-   //    code: '',
-   //    date: '',
-   // });
+   const [editingUser, setEditingUser] = useState({
+      name: '',
+      code: '',
+      date: '',
+   });
+
+   const handleEditUser = (user) => {
+      setEditingUser(user);
+      setName(user.name);
+      setCode(user.code);
+      setDate(user.date);
+   };
 
    const handleAddSv = () => {
-      fetch('https://6440e462792fe886a8986bf7.mockapi.io/api/v1/students', {
+      fetch(Api, {
          method: 'POST',
          headers: {
             'Content-type': 'application/json; charset=UTF-8',
@@ -50,53 +61,43 @@ const ListUser = () => {
 
    const handleSubmit = (event) => {
       event.preventDefault();
-      let formIsValid = false;
 
       const newErrors = {};
 
-      if (!name.name) {
+      if (!name) {
          newErrors.name = 'Không được để trống';
-         formIsValid = false;
-      } else if (name.name.length < 2) {
+      } else if (name.length < 2) {
          newErrors.name = 'Tên của sinh viên phải lớn hơn 2 kí tự';
-         formIsValid = false;
-      } else if (name.name.length > 30) {
+      } else if (name.length > 30) {
          newErrors.name = 'Tên của sinh viên phải bé hơn 30 kí tự';
-         formIsValid = false;
       }
 
-      if (!code.code) {
+      if (!code) {
          newErrors.code = 'Không được để trống';
-         formIsValid = false;
-      } else if (code.code.length < 3) {
+      } else if (code.length !== 4) {
          newErrors.code = 'Mã sinh viên phải có 4 kí tự';
-         formIsValid = false;
-      } else if (code.code.length > 5) {
-         newErrors.code = 'Mã sinh viên phải có 4 kí tự';
-         formIsValid = false;
       }
 
-      if (!date.date) {
+      if (!date) {
          newErrors.date = 'Không được để trống';
-         formIsValid = false;
-      } else if (date.date.length < 3) {
-         newErrors.date = 'Năm sinh phải có 4 chứ số';
-         formIsValid = false;
-      } else if (date.date.length > 5) {
-         newErrors.date = 'Năm sinh phải có 4 chứ số';
-         formIsValid = false;
+      } else if (date.length !== 4) {
+         newErrors.date = 'Năm sinh phải có 4 chữ số';
       }
 
       setErrors(newErrors);
 
-      console.log('formIsValid:', formIsValid);
+      const formIsValid = Object.keys(newErrors).length === 0;
+
       if (formIsValid) {
          handleAddSv();
+      } else {
+         // alert('Vui lòng nhập lại');
+         return;
       }
    };
 
    const handleDelete = (userId) => {
-      fetch(`https://6440e462792fe886a8986bf7.mockapi.io/api/v1/students/${userId}`, {
+      fetch(`${Api}/${userId}`, {
          method: 'DELETE',
       })
          .then(() => {
@@ -106,10 +107,37 @@ const ListUser = () => {
          .catch((error) => console.error('Error deleting item:', error));
    };
 
-   const handleEdit = () => {};
+   const handleUpdateSv = () => {
+      fetch(`${Api}/${editingUser.id}`, {
+         method: 'PUT',
+         headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+         },
+         body: JSON.stringify({
+            code: code,
+            date: date,
+            name: name,
+            completed: false,
+         }),
+      })
+         .then((response) => {
+            if (response.ok) {
+               return response.json();
+            }
+         })
+         .then((data) => {
+            setUser(user.map((user) => (user.id === editingUser.id ? data : user)));
+
+            setName('');
+            setCode('');
+            setDate('');
+            setEditingUser(null);
+         })
+         .catch((error) => console.error('Error updating item:', error));
+   };
 
    useEffect(() => {
-      fetch('https://6440e462792fe886a8986bf7.mockapi.io/api/v1/students')
+      fetch(Api)
          .then((res) => res.json())
          .then((user) => {
             setUser(user);
@@ -119,16 +147,32 @@ const ListUser = () => {
          });
    }, []);
 
+   const handleSearch = (event) => {
+      setSearchTerm(event.target.value);
+   };
+
+   const filteredUser = user.filter((student) => {
+      return (
+         student.name.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+         student.code.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      );
+   });
+
    return (
       <div className="list-page">
          <form action="" onSubmit={handleSubmit} className="form-input">
             <button
                className="btn-add-sv"
-               // onClick={(e) => {
-               //    handleAddSv(e);
-               // }}
+               onClick={(e) => {
+                  const editingUser = false;
+                  if (editingUser) {
+                     handleAddSv();
+                  } else {
+                     handleUpdateSv();
+                  }
+               }}
             >
-               Thêm sinh viên
+               {!editingUser?.name ? 'Add ' : 'Update'} sinh viên
             </button>
             <div className="input-student">
                <label htmlFor="code">Mã sinh viên</label>
@@ -171,6 +215,9 @@ const ListUser = () => {
          <div className="list-user">
             <div className="title-list">
                <h4 className="title-list-sv"> Danh sách sinh viên </h4>
+               <div className="search-student">
+                  <input type="text" placeholder="Tìm kiếm sinh viên" onChange={handleSearch} />
+               </div>
             </div>
             <div className="table">
                <table>
@@ -184,19 +231,20 @@ const ListUser = () => {
                         <th>Hành động</th>
                      </tr>
                   </thead>
-                  <tbody>
-                     {user.map((users) => (
-                        <tr key={users.id}>
-                           <td>{users.id}</td>
-                           <td>{users.code}</td>
-                           <td>{users.name}</td>
-                           <td>{users.date}</td>
+                  <tbody className="table-search">
+                     {filteredUser.map((item, id) => (
+                        <tr key={id}>
+                           <td>{item.id}</td>
+                           <td>{item.code}</td>
+                           <td>{item.name}</td>
+                           <td>{item.date}</td>
                            <td>
-                              <button type="button" className="btn btn-edit" onClick={() => handleEdit(users.id)}>
-                                 Sửa
+                              <button type="button" className="btn btn-edit" onClick={() => handleEditUser(item)}>
+                                 Edit
                               </button>
-                              <button type="button" className="btn btn-delete" onClick={() => handleDelete(users.id)}>
-                                 Xóa
+
+                              <button type="button" className="btn btn-delete" onClick={() => handleDelete(item.id)}>
+                                 Dele
                               </button>
                            </td>
                         </tr>
