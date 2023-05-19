@@ -1,0 +1,72 @@
+.btn-add-sv {
+   padding: 3px 5px;
+   margin-left: 100px;
+}
+.btn-add-sv:hover {
+   cursor: pointer;
+}
+.table table {
+   border-spacing: inherit;
+}
+
+.title-list-sv {
+   padding: 10px;
+}
+
+.list-user {
+   width: 85%;
+   margin: 20px auto;
+}
+
+thead > tr > th {
+   padding: 5px 50px;
+   border: 1px solid rgb(155, 122, 118);
+}
+
+tbody > tr > td {
+   padding: 7px 0px;
+   text-align: center;
+
+   border: 1px solid rgb(155, 122, 118);
+}
+
+.btn {
+   margin: 0 5px;
+   padding: 0 10px;
+}
+
+.btn-edit:hover {
+   /* background-color: #00fba7;
+   border-radius: 3px; */
+   cursor: pointer;
+}
+
+.btn-delete:hover {
+   /* background-color: rgb(237 82 82);
+   border-radius: 3px; */
+   cursor: pointer;
+}
+
+.input-student {
+   width: 30%;
+   display: grid;
+}
+.input-student > label {
+   margin-top: 15px;
+}
+.input-student > input {
+   padding: 5px;
+}
+
+.form-input {
+   margin: 0 auto;
+   width: 85%;
+}
+
+.error-validate {
+   color: #fff;
+}
+
+.search-student {
+   margin: 10px 5px;
+}
